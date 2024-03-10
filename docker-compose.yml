@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  taskmanagerapp:
+    image: ${DOCKER_REGISTRY-}taskmanagerapp
+    build:
+      context: .
+      dockerfile: TaskManagerApp/Dockerfile
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    ports:
+      - 27017:27017
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+      ME_CONFIG_MONGODB_URL: mongodb://root:123456@mongo:27017/
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+    depends_on:
+      - mongo
